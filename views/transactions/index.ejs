@@ -1,0 +1,68 @@
+<% include ../partials/header %>
+
+<div class="container-fluid margen20">
+    <% include ../partials/toolbar %>
+    <div class="row">
+        <table class="table table-striped table-hover table-condensed">
+            <tr>
+                <th>Fecha</th>
+                <th>Categoría</th>
+                <th>Proyecto</th>
+                <th>Cuenta</th>
+                <th>Documentos</th>
+                <th>Monto</th>
+                <th>Observaciones</th>
+                <th></th>
+            </tr>
+            <% transactions.forEach(function(transaction){ %>
+                <tr>
+                    <% var fecha = ""; //transaction.date.substring(6, 8) + "/" + transaction.date.substring(4, 6) + "/" + transaction.date.substring(0, 4); %>
+                    <% 
+                        var d = numeral(transaction.date % 100).format('00');
+                        var m = numeral((transaction.date % 10000 - d)/100).format('00');
+                        var y = numeral((transaction.date - m*100 - d)/10000).format('00');
+                        var fecha = d + "/" + m + "/" + y 
+                    %>
+                    <td><%= fecha %></td>
+                    <% 
+                        var signo = transaction.sign < 0 ? "GASTO" : "INGRESO";
+                        var categoria = transaction.category ? transaction.category.name : "ERROR: NO HAY DATO";
+                        var subcategoria = transaction.subcategory ? transaction.subcategory.name : "ERROR: NO HAY DATO";
+                        var scs = signo + ", " + categoria + ", " + subcategoria;
+                        var cuenta = transaction.account ? transaction.account.name : "ERROR: NO HAY DATO";
+                        var empresa = transaction.company ? transaction.company.name : "ERROR: NO HAY DATO";
+                        var proyecto = transaction.proyect ? transaction.proyect.name : "";
+                        var cheque = transaction.check ? transaction.check.number : "";
+                        cheque = cheque ? "cheque: " + cheque : "";
+                        var facturaSerie = transaction.invoice ? transaction.invoice.serial : "";
+                        var facturaNumber = transaction.invoice ? transaction.invoice.number : "";
+                        var factura = facturaSerie + " " + facturaNumber;
+                        var facturaName = transaction.invoice ? transaction.invoice.contact.name : "";
+                        facturaName = facturaName ? "Factura: " + facturaName : "";
+                        var monto = Number(transaction.total/100).toFixed(2); 
+                        monto = numeral(monto).format('0,0.00');
+                        var nombre = transaction.check ? transaction.check.name : "";
+                        nombre = nombre ? "Cheque para: " + nombre : "";
+                        var concepto = transaction.check ? transaction.check.concept : "";
+                        var observacion = transaction.obs ? transaction.obs.substring(transaction.obs.indexOf("|") + 1) : "";
+                    %>
+                    <td><%= signo %><br><%= categoria %><br><%= subcategoria %></td>
+                    <td><%= empresa %><br><%= proyecto %></td>
+                    <td><%= cuenta %></td>
+                    <td><%= factura %><br><%= cheque %></td>
+                    <td class="rightThis"><%= monto %></td>
+                    <td><%= facturaName %><br><%= nombre %><br><%= observacion %></td>
+                    <td><a href="/transactions/<%= transaction._id %>/edit" class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                    <form class="delete-form" action="/transactions/<%= transaction._id %>?_method=delete" method="POST">
+                        <button onclick="return confirm('Está seguro de eliminar: <%= fecha + " " + " " + scs + " " + monto %>?');" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </form></td>
+                </tr>
+            <% }); %>
+        </table>  
+        
+        <% include ../partials/pagination %>
+        
+    </div>
+</div>
+
+<% include ../partials/footer %>

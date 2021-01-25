@@ -1,0 +1,65 @@
+<% include ../partials/header %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.js"></script>
+<script>
+    $(window).on('load', function() {
+        $("#date").val(moment().format('YYYY-MM-DD'));
+    });
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <h3>Nueva Factura</h3>  
+            <br>
+        </div>
+        <form action="/invoices" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="contact" class="col-sm-2 control-label">Nombre:</label>
+                <div class="col-sm-4">
+                    <select id="contact" class="form-control" name="invoice[contact]">
+                        <% contacts.forEach(function(contact){ %>
+                            <option value="<%= contact._id %>"><%= contact.nit + " (" + contact.name + ")" %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="date" class="col-sm-2 control-label">Fecha:</label>
+                <div class="col-sm-4">
+                    <input class="form-control" id="date" type="date" name="invoice[date]">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="serial" class="col-sm-2 control-label">Serie:</label>
+                <div class="col-sm-4">
+                    <input class="form-control esFactura" id="serial" type="text" name="invoice[serial]" placeholder="serie de factura">
+                </div>
+                <label for="number" class="col-sm-2 control-label">Número:</label>
+                <div class="col-sm-4">
+                    <input class="form-control esFactura" id="number" type="text" name="invoice[number]" placeholder="número de factura">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="total" class="col-sm-2 control-label">Monto:</label>
+                <div class="col-sm-4" lang="en-US">
+                    <input step="0.01" min="0" class="form-control" id="total" type="number" name="invoice[total]" placeholder="monto">
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <input  type="checkbox" checked name="invoice[include]"> Incluir en contabilidad?
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10 text-right">
+                    <input type="submit" name="guardar" class="btn btn-success" value="Guardar">
+                    <input type="submit" name="otro" class="btn btn-success" value="Guardar y Añadir Otra"> 
+                    <a href="/invoices/p=1/s=." class="btn btn-warning">Cancelar</a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer %>

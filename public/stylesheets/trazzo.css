@@ -1,0 +1,137 @@
+.margen20{
+    margin: 0px 20px;
+}
+
+.margen40{
+    margin: 0px 40px;
+}
+
+.margen100{
+    margin: 0px 100px;
+}
+
+.margen200{
+    margin: 0px 200px;
+}
+
+.rightThis{
+    text-align: right;
+    width: 10%;
+    /*top: 60%;*/
+    position: relative;
+    transform: translateY(15%);
+}
+
+.alignRightThis{
+    text-align: right;
+}
+
+th {
+    text-align: center;
+}
+
+
+.fa-check {
+    display: inline-block;
+    width: 100%;
+}
+
+td i {
+    text-align:center;
+}
+
+.inlineThis{
+  display: inline-block;  
+} 
+
+.input-group-addon{
+    padding:0px;
+}
+
+@media (max-width:800px){
+    .hideThis{
+        display:none; 
+    }
+}
+
+.footerThis{
+    width:100%;
+    position: absolute; 
+    bottom: 5px; 
+    background-color: silver;
+    color: white;
+    text-align: center;
+    margin: 0px;
+    padding:0px;
+}
+
+.delete-form{
+    display: inline;
+}
+
+.headerThis{
+    text-align:center;
+    font-weight: bold;
+}
+
+.navbar-default{
+    background-color: #105189;
+    border-color: #105189;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #fff;
+}
+
+.navbar-default .navbar-brand {
+    color: #fff;
+}
+
+.dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: #105189;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+    color: #25d1cb;
+}
+
+.navbar-default .navbar-brand:focus, .navbar-default .navbar-brand:hover {
+    color: #25d1cb;
+    background-color: transparent;
+}
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .open > a:hover {
+    color: #105189;
+    background-color: #fff;
+}
+
+.table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > th, .table-condensed > thead > tr > th {
+    background-color: #105189;
+    color: #fff;
+}
+
+.table-condensed > tbody > tr:hover {
+   background-color: #47bccf;
+   color: #fff;
+}
+
+.table-condensed > tbody > tr:nth-child(2n+1):hover {
+   background-color: #47bccf;
+   color: #fff;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1)  {
+   background-color: #e4ebf3;
+}
+
+/*@media (max-width:700px) {*/
+/*   td:nth-child(n-1),th:nth-child(n-1) {display:none}*/
+/*}*/
+/*@media (max-width:480px) {*/
+/*    td:nth-child(n+5),th:nth-child(n+5) {display:none}*/
+/*}*/
+/*@media (max-width:320px) {*/
+/*    td:nth-child(n+4),th:nth-child(n+4) {display:none}*/
+/*}*/

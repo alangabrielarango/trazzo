@@ -1,0 +1,61 @@
+<% include ../partials/header %>
+
+<script>
+    $(document).ready(function(){
+       $("#tipo").change(function () {
+            $("#tipo option:selected").each(function () {
+                seleccion=$(this).val();
+                $.post("/categories/list", { seleccion: seleccion }, function(data){
+                    $("#category").html(data);
+                });            
+            });
+       });
+    });
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <h3>Nueva Subcategoría</h3>  
+            <br>
+        </div>
+        <form action="/subcategories" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Nombre:</label>
+                <div class="col-sm-4">
+                    <input class="form-control" id="name" type="text" name="subcategory[name]" placeholder="nombre">
+                </div>
+                <label for="tipo" class="col-sm-2 control-label">Tipo:</label>
+                <div class="col-sm-4">
+                    <select id="tipo" class="form-control" name="subcategory[sign]">
+                        <option value="-1">Gasto</option>
+                        <option value="1">Ingreso</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="category" class="col-sm-2 control-label">Categoría:</label>
+                <div class="col-sm-10">
+                    <select id="category" class="form-control" name="subcategory[category]">
+                        <% categories.forEach(function(category){ %>
+                            <option value="<%= category._id %>"><%= category.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10 text-right">
+                    <input type="submit" name="guardar" class="btn btn-success" value="Guardar">
+                    <input type="submit" name="otro" class="btn btn-success" value="Guardar y Añadir Otra"> 
+                    <a href="/subcategories/p=1/s=." class="btn btn-warning">Cancelar</a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer %>

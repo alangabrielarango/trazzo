@@ -1,0 +1,244 @@
+<% include ../partials/header %>
+
+<script>
+    function changeCategory(){
+        $("#sign option:selected").each(function () {
+            seleccion1=$(this).val();
+            $.post("/categories/list", { seleccion: seleccion1 }, function(data){
+                $("#category").html(data);
+                changeSubcategory();
+            });            
+        });
+    }
+    
+    function changeSubcategory(){
+        $("#category option:selected").each(function () {
+            seleccion2=$(this).val();
+            $.post("/subcategories/list", { seleccion: seleccion2 }, function(data){
+                $("#subcategory").html(data);
+            });            
+        });
+    }
+    
+    function changeCheck(){
+        $("#account option:selected").each(function () {
+            seleccion3=$(this).val();
+            $.post("/checks/list", { seleccion: seleccion3 }, function(data){
+                $("#check").html(data);
+            });            
+        });
+    }
+    
+    function changeProyect(){
+        $("#company option:selected").each(function () {
+            seleccion4=$(this).val();
+            $.post("/proyects/list", { seleccion: seleccion4 }, function(data){
+                $("#proyect").html(data);
+            });            
+        });
+    }
+    
+    //$(window).on('load', function() {
+    //     changeCategory();
+    //     changeSubcategory();
+    //      changeCheck();
+    //  });
+    
+    $(document).ready(function(){
+        $("#sign").change(function () {
+            changeCategory();
+        });
+        $("#category").change(function () {
+            changeSubcategory();
+        });
+        $("#account").change(function () {
+            changeCheck();
+        });
+        $("#company").change(function () {
+            changeProyect();
+        });
+    });
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <h4>Editar Transacción</h4>  
+        </div>
+        <form action="/transactions/<%= transaction._id %>?_method=PUT" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="sign" class="col-sm-2 control-label">Tipo:</label>
+                <div class="col-sm-4">
+                    <% var gasto = transaction.sign < 0 ? "selected" : ""; %>
+                    <% var ingreso = gasto === "" ? "selected" : ""; %>
+                    <select id="sign" class="form-control" name="transaction[sign]">
+                        <option value="-1" <%= gasto %>>Gasto</option>
+                        <option value="1" <%= ingreso %>>Ingreso</option>
+                    </select>
+                </div>
+                <label for="date" class="col-sm-2 control-label">Fecha:</label>
+                <div class="col-sm-4">
+                    <% 
+                        var d = numeral(transaction.date % 100).format('00');
+                        var m = numeral((transaction.date % 10000 - d)/100).format('00');
+                        var y = numeral((transaction.date - m*100 - d)/10000).format('00');
+                        var fecha = y + "-" + m + "-" + d 
+                    %>
+                    <input class="form-control" id="date" type="date" name="transaction[date]" value="<%= fecha %>">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="category" class="col-sm-2 control-label">Categoría:</label>
+                <div class="col-sm-4">
+                    <select id="category" class="form-control" name="transaction[category]">
+                        <% var categoria = "", valor2 = "" %>
+                        <% categories.forEach(function(category){ %>
+                            <% valor2 = transaction.category ? transaction.category.name : "null" %>
+                            <% categoria = category.name === valor2 ? "selected" : ""; %>
+                            <% categoria = categoria === "null" ? "selected" : categoria; %>
+                            <option value="<%= category._id %>" <%= categoria %>><%= category.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="company" class="col-sm-2 control-label">Empresa:</label>
+                <div class="col-sm-4">
+                    <select id="company" class="form-control" name="transaction[company]">
+                        <% var empresa = "", valor6 = "" %>
+                        <% companies.forEach(function(company){ %>
+                            <% valor6 = transaction.company ? transaction.company.name : "null" %>
+                            <% empresa = company.name === valor6 ? "selected" : ""; %>
+                            <% empresa = empresa === "null" ? "selected" : empresa; %>
+                            <option value="<%= company._id %>" <%= empresa %>><%= company.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="subcategory" class="col-sm-2 control-label">Subcategoría:</label>
+                <div class="col-sm-4">
+                    <select id="subcategory" class="form-control" name="transaction[subcategory]">
+                        <% var subcategoria = "", valor3 = "" %>
+                        <% subcategories.forEach(function(subcategory){ %>
+                            <% valor3 = transaction.subcategory ? transaction.subcategory.name : "null" %>
+                            <% subcategoria = subcategory.name === valor3 ? "selected" : ""; %>
+                            <% subcategoria = subcategoria === "null" ? "selected" : subcategoria; %>
+                            <option value="<%= subcategory._id %>" <%= subcategoria %>><%= subcategory.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="proyect" class="col-sm-2 control-label">Proyecto:</label>
+                <div class="col-sm-4">
+                    <select id="proyect" class="form-control" name="transaction[proyect]">
+                        <% var proyecto = "", valor6 = "" %>
+                        <option value="" "selected">SIN PROYECTO</option>
+                        <% proyects.forEach(function(proyect){ %>
+                            <% valor6 = transaction.proyect ? transaction.proyect.name : "null" %>
+                            <% proyecto = proyect.name === valor6 ? "selected" : ""; %>
+                            <option value="<%= proyect._id %>" <%= proyecto %>><%= proyect.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label for="account" class="col-sm-2 control-label">Cuenta:</label>
+                <div class="col-sm-4">
+                    <select id="account" class="form-control" name="transaction[account]">
+                        <% var cuenta = "", valor4 = "" %>
+                        <% accounts.forEach(function(account){ %>
+                            <% valor4 = transaction.account ? transaction.account.name : "null" %>
+                            <% cuenta = account.name === valor4 ? "selected" : ""; %>
+                            <% cuenta = cuenta === "null" ? "selected" : cuenta; %>
+                            <option value="<%= account._id %>" <%= cuenta %>><%= account.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="contact" class="col-sm-2 control-label">Factura de:</label>
+                <div class="col-sm-4">
+                    <select id="contact" class="form-control" name="transaction[contact]">
+                        <% var contacto = "", valor7 = "" %>
+                        <option value='' "selected">SIN FACTURA</option>
+                        <% contacts.forEach(function(contact){ %>
+                            <% valor7 = transaction.invoice && invoice.contact ? invoice.contact.nit : "null" %>
+                            <% contacto = contact.nit === valor7 ? "selected" : ""; %>
+                            <option value="<%= contact._id %>" <%= contacto %>><%= contact.nit + " (" + contact.name + ")" %></option>
+                        <% }); %>
+                    </select>
+                    
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="serial" class="col-sm-2 control-label">Serie:</label>
+                <div class="col-sm-4">
+                    <% var serie = transaction.invoice ? invoice.serial : ""; %>
+                    <input class="form-control" id="serial" type="text" name="transaction[serial]" value="<%= serie %>">
+                </div>
+                <label for="number" class="col-sm-2 control-label">Número:</label>
+                <div class="col-sm-4">
+                    <% var number = transaction.invoice ? invoice.number : ""; %>
+                    <input class="form-control" id="number" type="text" name="transaction[number]" value="<%= number %>">
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label for="check" class="col-sm-2 control-label">Cheque:</label>
+                <div class="col-sm-4">
+                    <select id="check" class="form-control" name="transaction[check]">
+                        <% var cheque = "", valor5 = "" %>
+                        <option value="">SIN CHEQUE</option>
+                        <% checks.forEach(function(check){ %>
+                            <% valor5 = transaction.check ? transaction.check.number : "null" %>
+                            <% cheque = check.number === valor5 ? "selected" : ""; %>
+                            <% cheque = cheque === "null" ? "selected" : cheque; %>
+                            <option value="<%= check._id %>" <%= cheque %>><%= check.number %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="finalDate" class="col-sm-2 control-label">Fecha de Cobro:</label>
+                <div class="col-sm-4">
+                    <% 
+                        var d2 = transaction.check ? numeral(transaction.date % 100).format('00') : "";
+                        var m2 = transaction.check ? numeral((transaction.date % 10000 - d)/100).format('00') : "";
+                        var y2 = transaction.check ? numeral((transaction.date - m*100 - d)/10000).format('00') : "";
+                        var fecha2 = transaction.check ? y2 + "-" + m2 + "-" + d2 : ""; 
+                    %>
+                    <input class="form-control" id="date" type="date" name="transaction[finalDate]" value="<%= fecha2 %>">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Nombre:</label>
+                <div class="col-sm-10">
+                    <% var nombre = transaction.check ? transaction.check.name : "" %>
+                    <input class="form-control" id="name" type="text" name="transaction[name]" value="<%= nombre %>">
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label for="obs" class="col-sm-2 control-label">Observaciones:</label>
+                <div class="col-sm-10">
+                    <% var observacion = transaction.obs ? transaction.obs.substring(transaction.obs.indexOf("|") + 1) : ""; %>
+                    <% var concepto = transaction.check ? transaction.check.concept : observacion %>
+                    <textarea class="form-control" id="obs" name="transaction[obs]"><%= concepto %></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="total" class="col-sm-2 control-label">Monto:</label>
+                <div class="col-sm-10" lang="en-US">
+                    <input step="0.01" min="0" class="form-control" id="total" type="number" name="transaction[total]" value="<%= transaction.total/100 %>">
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10 text-right">
+                    <input type="submit" name="guardar" class="btn btn-success" value="Guardar">
+                    <a href="/transactions/p=1/s=." class="btn btn-warning">Cancelar</a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer %>

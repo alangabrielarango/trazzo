@@ -1,2 +1,2 @@
 # trazzo
-Income and expenses manager built with NodeJS
+Income and Expense Manager System built on NodeJS

@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col-md-2">
+        <h2><%= title %></h2><br> 
+    </div>
+    <div class="col-md-10 text-right">
+        <br>
+        <form class="form-inline inlineThis" action="/<%= catalog %>/p=1" method="post">
+            <div class="input-group">
+                <input type="text" placeholder="buscar..." class="form-control" name="searchText">
+                <span class="input-group-addon">
+                    <button type="submit" class="btn btn-info"><i class="fa fa-search" aria-hidden="true"></i></a>
+                </span>
+            </div>
+        </form>
+        <a href="/<%= catalog %>/p=1/s=." class="btn btn-primary"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+        <a href="/<%= catalog %>/new" class="btn btn-success"><%= addButton %></a>
+    </div>
+</div>
+<br>

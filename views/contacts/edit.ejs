@@ -1,0 +1,87 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <h3>Editar Contacto</h3>  
+            <br>
+        </div>
+        <form action="/contacts/<%= contact._id %>?_method=PUT" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Nombre:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="name" type="text" name="contact[name]" value="<%= contact.name %>">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="nit" class="col-sm-2 control-label">NIT:</label>
+                <div class="col-sm-4">
+                    <input class="form-control" id="nit" type="text" name="contact[nit]" value="<%= contact.nit %>">
+                </div>
+                <label for="fullName" class="col-sm-2 control-label">Razón Social:</label>
+                <div class="col-sm-4">
+                    <input class="form-control" id="fullName" type="text" name="contact[fullName]" value="<%= contact.fullName %>">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="phones" class="col-sm-2 control-label">Teléfonos:</label>
+                <div class="col-sm-4" id="phones">
+                    <input class="form-control" type="text" name="contact[phone1]" value="<%= contact.phone1 %>">
+                </div>
+                <div class="col-sm-3" id="phones">
+                    <input class="form-control" type="text" name="contact[phone2]" value="<%= contact.phone2 %>">
+                </div>
+                <div class="col-sm-3" id="phones">
+                    <input class="form-control" type="text" name="contact[phone3]" value="<%= contact.phone3 %>">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email" class="col-sm-2 control-label">Email y Sitio Web:</label>
+                <div class="col-sm-5">
+                    <input class="form-control" id="email" type="text" name="contact[email]" value="<%= contact.email %>"> 
+                </div>
+                <div class="col-sm-5">
+                    <input class="form-control" type="text" name="contact[webPage]" value="<%= contact.webPage %>"> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="tags" class="col-sm-2 control-label">Etiquetas:</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" id="tags" name="contact[tags]" value="<%= contact.tags %>"></textarea>
+                </div>
+            </div>
+            <div class="form-group checkbox">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-2">
+                    <% var check01; contact.hasAccount? check01 = "checked" : check01 = ""  %>
+                    <input  type="checkbox" name="contact[hasAccount]" <%= check01 %>> Lleva una cuenta?
+                </div>
+                <div class="col-sm-2">
+                    <% var check02; contact.isClient? check02 = "checked" : check02 = ""  %>
+                    <input  type="checkbox" name="contact[isClient]" <%= check02 %>> Es un cliente?
+                </div>
+                <div class="col-sm-2">
+                    <% var check03; contact.isProvider? check03 = "checked" : check03 = ""  %>
+                    <input  type="checkbox" name="contact[isProvider]" <%= check03 %>> Provee productos?
+                </div>
+                <div class="col-sm-4">
+                    <% var check04; contact.isWorker? check04 = "checked" : check04 = ""  %>
+                    <input  type="checkbox" name="contact[isWorker]" <%= check04 %>> Provee servicios o es un trabajador?
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10 text-right">
+                    <input type="submit" name="guardar" class="btn btn-success" value="Guardar Cambios">
+                    <a href="/contacts/p=1/s=." class="btn btn-warning">Cancelar</a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer %>

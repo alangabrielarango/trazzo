@@ -1,0 +1,31 @@
+<% include ../partials/header %>
+
+<div class="container-fluid margen100">
+    <% include ../partials/toolbar %>
+    <div class="row">
+        <table class="table table-striped table-hover table-condensed">
+            <tr>
+                <th>Nombre</th>
+                <th>NIT</th>
+                <th>Razón Social</th>
+                <th></th>
+            </tr>
+            <% companies.forEach(function(company){ %>
+                <tr>
+                    <td><%= company.name %></td>
+                    <td><%= company.nit %></td>
+                    <td><%= company.fullName %></td>
+                    <td><a href="/companies/<%= company._id %>/edit" class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                    <form class="delete-form" action="/companies/<%= company._id %>?_method=delete" method="POST">
+                        <button onclick="return confirm('Está seguro de eliminar: <%= company.name %>?');" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </form></td>
+                </tr>
+            <% }); %>
+        </table>  
+        
+        <% include ../partials/pagination %>
+        
+    </div>
+</div>
+
+<% include ../partials/footer %>

@@ -1,0 +1,29 @@
+<% if (pages > 0) { %>
+    <ul class="pagination text-center">
+        <% if (current == 1) { %>
+            <li class="disabled"><a>Inicio</a></li>
+        <% } else { %>
+            <li><a href="/<%= catalog %>/p=1/s=<%= searching %>">Inicio</a></li>
+        <% } %>
+        <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+        <% if (i !== 1) { %>
+            <li class="disabled"><a>...</a></li>
+        <% } %>
+        <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+            <% if (i == current) { %>
+                <li class="active"><a><%= i %></a></li>
+            <% } else { %>
+                <li><a href="/<%= catalog %>/p=<%= i %>/s=<%= searching %>"><%= i %></a></li>
+            <% } %>
+            <% if (i == Number(current) + 4 && i < pages) { %>
+                <li class="disabled"><a>...</a></li>
+            <% } %>
+        <% } %>
+        <% if (current == pages) { %>
+            <li class="disabled"><a>Fin</a></li>
+        <% } else { %>
+            <li><a href="/<%= catalog %>/p=<%= pages %>/s=<%= searching %>">Fin</a></li>
+        <% } %>
+    </ul>
+<% } %> 
+

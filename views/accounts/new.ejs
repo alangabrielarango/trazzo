@@ -1,0 +1,72 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <h3>Nueva Cuenta</h3>  
+            <br>
+        </div>
+        <form action="/accounts" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Nombre:</label>
+                <div class="col-sm-4">
+                    <input class="form-control" id="name" type="text" name="account[name]" placeholder="nombre">
+                </div>
+                <label for="number" class="col-sm-2 control-label">Número:</label>
+                <div class="col-sm-4">
+                    <input class="form-control" id="number" type="text" name="account[number]" placeholder="número de cuenta">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="type" class="col-sm-2 control-label">Tipo:</label>
+                <div class="col-sm-4">
+                    <select id="type" class="form-control" name="account[type]">
+                        <option value="Monetaria">Monetaria</option>
+                        <option value="Ahorro">Ahorro</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+                        <option value="Extrafinanciamiento">Extrafinanciamiento</option>
+                        <option value="Préstamo">Préstamo</option>
+                        <option value="Dólares Monetaria">Dólares Monetaria</option>
+                        <option value="Dólares Ahorro">Dólares Ahorro</option>
+                    </select>
+                </div>
+                <label for="bank" class="col-sm-2 control-label">Banco:</label>
+                <div class="col-sm-4">
+                    <select id="bank" class="form-control" name="account[bank]">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Banco Agromercantil">Banco Agromercantil</option>
+                        <option value="Banrural">Banrural</option>
+                        <option value="Banco Industrial">Banco Industrial</option>
+                        <option value="G&T Continental">G&T Continental</option>
+                        <option value="Crédito Hipotecario Nacional">Crédito Hipotecario Nacional</option>
+                        <option value="BAC Credomatic">BAC Credomatic</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="contact" class="col-sm-2 control-label">Contacto:</label>
+                <div class="col-sm-4">
+                    <select id="contact" class="form-control" name="account[contact]">
+                        <% contacts.forEach(function(contact){ %>
+                            <option value="<%= contact._id %>"><%= contact.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10 text-right">
+                    <input type="submit" name="guardar" class="btn btn-success" value="Guardar">
+                    <input type="submit" name="otro" class="btn btn-success" value="Guardar y Añadir Otra"> 
+                    <a href="/accounts/p=1/s=." class="btn btn-warning">Cancelar</a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer %>

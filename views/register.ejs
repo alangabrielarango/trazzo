@@ -1,0 +1,11 @@
+<% include ./partials/header %>
+
+<h1>Crear nuevo usuario</h1>
+
+<form action="/register" method="post">
+    <input type="text" name="username" placeholder="usuario">
+    <input type="password" name="password" placeholder="contraseña">
+    <button>Guardar</button>
+</form>
+
+<% include ./partials/footer %>

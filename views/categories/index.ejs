@@ -1,0 +1,29 @@
+<% include ../partials/header %>
+
+<div class="container-fluid margen100">
+    <% include ../partials/toolbar %>
+    <div class="row">
+        <table class="table table-striped table-hover table-condensed">
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th></th>
+            </tr>
+            <% categories.forEach(function(category){ %>
+                <tr>
+                    <td><%= category.name %></td>
+                    <td><% var tipo = ""; category.sign > 0 ? tipo = "INGRESO" : tipo = "GASTO"; %><%= tipo %></td>
+                    <td><a href="/categories/<%= category._id %>/edit" class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                    <form class="delete-form" action="/categories/<%= category._id %>?_method=delete" method="POST">
+                        <button onclick="return confirm('Está seguro de eliminar: <%= category.name %>?');" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </form></td>
+                </tr>
+            <% }); %>
+        </table>  
+        
+        <% include ../partials/pagination %>
+        
+    </div>
+</div>
+
+<% include ../partials/footer %>

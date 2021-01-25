@@ -1,0 +1,140 @@
+<% include ../partials/header %>
+
+<script>
+    function changeData(){
+        var ejercicio, empresa;
+        $("#year option:selected").each(function () {
+            ejercicio=$(this).val();
+        });
+        $("#company option:selected").each(function () {
+            empresa=$(this).val();
+        });
+        //alert(ejercicio);
+        $(location).attr('href',"/reports/categories/" + empresa + "/" + ejercicio);
+    }
+    
+    $(document).ready(function(){
+        $("select").change(function () {
+            changeData();
+        });
+        $("#refresh").on('click',function(){
+            changeData();
+        });
+    });
+</script>
+
+<div class="container-fluid margen40">
+    <div class="row">
+        <div class="form-group">
+            <label for="company" class="col-sm-2 control-label">Empresa:</label>
+            <div class="col-sm-5">
+                <select id="company" class="form-control" name="company">
+                    <option value="ALL" "selected">TODAS LAS EMPRESAS</option>
+                        <% var empresa = "" %> 
+                        <% companies.forEach(function(company){ %>
+                            <% empresaS = company._id == companyS ? "selected" : ""; %>
+                            <option value="<%= company._id %>" <%= empresaS %>><%= company.name %></option>
+                        <% }); %>
+                </select>
+            </div>    
+            <label for="year" class="col-sm-2 control-label">Año:</label>
+            <div class="col-sm-2">
+                <select id="year" class="form-control" name="year">
+                    <% var ejercicios = [2021,2020,2019,2018,2017,2016]; %>
+                    <% var ejercicioS = "" %> 
+                    <% ejercicios.forEach(function(ejercicio){ %>
+                        <% ejercicioS = ejercicio == yearS ? "selected" : ""; %>
+                        <option value="<%= ejercicio %>" <%= ejercicioS %>><%= ejercicio %></option>
+                    <% }); %>
+                </select>
+            </div>
+            <div class="col-sm-1 alignRightThis">
+                <button id="refresh" class="btn btn-primary btn-sm alignRightThis"><i class="fa fa-refresh" aria-hidden="true"></i></button>  
+            </div>
+        </div>
+        <br><hr>
+    </div>
+    
+     <div class="row">
+        <table class="table table-striped table-hover table-condensed">
+            <tr>
+                <th>CATEGORÍA</th>
+                <th>ENERO</th>
+                <th>FEBRERO</th>
+                <th>MARZO</th>
+                <th>ABRIL</th>
+                <th>MAYO</th>
+                <th>JUNIO</th>
+                <th>JULIO</th>
+                <th>AGOSTO</th>
+                <th>SEPTIEMBRE</th>
+                <th>OCTUBRE</th>
+                <th>NOVIEMBRE</th>
+                <th>DICIEMBRE</th>
+          
+            <% var subcatAnt = ""; var catAnt = ""; var cantMeses = 1; var continuar=true; var totalCat = [13];%>
+            <% transactions.forEach(function(transaction){ %>
+                <% if(transaction.subcategoria!=subcatAnt) { %>
+                
+                    <% if(subcatAnt!="" && cantMeses <12) {
+                        for(var i=cantMeses; i<=12; i++){ %>
+                            <td class="rightThis"></td>
+                        <% }
+                    }
+                    cantMeses = 1; %>
+                        
+                    
+                    </tr>
+                    <% if(catAnt != transaction.categoria) { %>
+                        <tr><td colspan="13"></td></tr>
+                        <tr><td><strong><%= transaction.categoria.toUpperCase() %></strong></td>
+                            <% 
+                            for(var j=1; j<=12; j++){
+                                totalCat[j] = 0;
+                                transactions.forEach(function(transTotal){
+                                   if(transTotal.categoria == transaction.categoria){
+                                       totalCat[transTotal.mes] += transTotal.total /100;
+                                   } 
+                                }); %>
+                                <td class="rightThis"><strong><%= numeral(totalCat[j]).format('0,0.00') %></strong></td>
+                            <% }%>
+                        </tr>
+                    <% } %>
+                    <tr>
+                        <td><%= transaction.subcategoria %></td>
+                        <% 
+                        continuar = true;
+                        while(cantMeses <= 12 && continuar){
+                            if(transaction.mes == cantMeses){ %>
+                                <td class="rightThis"><%= numeral(transaction.total/100).format('0,0.00'); %></td>
+                                <% cantMeses += 1; catAnt = transaction.categoria; subcatAnt = transaction.subcategoria; continuar = false;
+                            } else { %>
+                                <td class="rightThis"></td>
+                                <% cantMeses += 1;
+                            }
+                        } %>
+                <% } else { 
+                    var continuar2 = true;
+                    while(cantMeses <= 12 && continuar2){
+                        if(transaction.mes == cantMeses){ %>
+                            <td class="rightThis"><%= numeral(transaction.total/100).format('0,0.00'); %></td>
+                            <% cantMeses += 1; 
+                            continuar2 = false;
+                        } else { %>
+                            <td class="rightThis"></td>
+                            <% cantMeses += 1;
+                        } 
+                    }    
+                }
+            }); %>
+            <% if(subcatAnt!="" && cantMeses <12) {
+                for(var i=cantMeses; i<=12; i++){ %>
+                    <td class="rightThis"></td>
+                <% }
+                cantMeses = 0;
+            } %> </tr>
+        </table>
+    </div>
+</div>
+
+<% include ../partials/footer %>

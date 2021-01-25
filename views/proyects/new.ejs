@@ -1,0 +1,57 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <h3>Nuevo Proyecto</h3>  
+            <br>
+        </div>
+        <form action="/proyects" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Nombre:</label>
+                <div class="col-sm-4">
+                    <input class="form-control" id="name" type="text" name="proyect[name]" placeholder="nombre">
+                </div>
+                <label for="tipo" class="col-sm-2 control-label">Estado:</label>
+                <div class="col-sm-4">
+                    <select id="status" class="form-control" name="proyect[status]">
+                        <option value="En Ejecución">En Ejecución</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Terminado">Terminado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="company" class="col-sm-2 control-label">Empresa:</label>
+                <div class="col-sm-4">
+                    <select id="company" class="form-control" name="proyect[company]">
+                        <% companies.forEach(function(company){ %>
+                            <option value="<%= company._id %>"><%= company.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="contact" class="col-sm-2 control-label">Cliente:</label>
+                <div class="col-sm-4">
+                    <select id="contact" class="form-control" name="proyect[contact]">
+                        <% contacts.forEach(function(contact){ %>
+                            <option value="<%= contact._id %>"><%= contact.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10 text-right">
+                    <input type="submit" name="guardar" class="btn btn-success" value="Guardar">
+                    <input type="submit" name="otro" class="btn btn-success" value="Guardar y Añadir Otro"> 
+                    <a href="/proyects/p=1/s=." class="btn btn-warning">Cancelar</a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer %>

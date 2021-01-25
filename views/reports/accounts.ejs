@@ -1,0 +1,198 @@
+<% include ../partials/header %>
+<script>
+    function changeData(){
+        var cuenta, mes, ejercicio;
+        $("#account option:selected").each(function () {
+            cuenta=$(this).val();
+        });
+        $("#month option:selected").each(function () {
+            mes=$(this).val();
+        });
+        $("#year option:selected").each(function () {
+            ejercicio=$(this).val();
+        });
+        // alert(cuenta + '-' + mes + '-' + ejercicio);
+        $(location).attr('href',"/reports/accounts/" + cuenta + "/" + ejercicio + "/" + mes);
+    }
+    
+    $(window).on('load', function() {
+        //changeData();
+    });
+    
+    $(document).ready(function(){
+        $("select").change(function () {
+            changeData();
+        });
+        $("#refresh").on('click',function(){
+            changeData();
+        });
+    });
+</script>
+
+
+<div class="container-fluid margen40">
+    <div class="row">
+        
+            <div class="form-group">
+                <label for="account" class="col-sm-2 control-label">Cuenta:</label>
+                <div class="col-sm-4">
+                    <select id="account" class="form-control" name="account">
+                        <option value="ALL" "selected">TODAS LAS CUENTAS</option>
+                        <% var cuenta = "" %> 
+                        <% accounts.forEach(function(account){ %>
+                            <% cuentaS = account._id == accountS ? "selected" : ""; %>
+                            <option value="<%= account._id %>" <%= cuentaS %>><%= account.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="month" class="col-sm-1 control-label">Mes:</label>
+                <div class="col-sm-2">
+                    <select id="month" class="form-control" name="month">
+                        <% var meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]; %>
+                        <% var mesS = "" %> 
+                        <% meses.forEach(function(mes){ %>
+                            <% mesS = meses.indexOf(mes)+1 == monthS ? "selected" : ""; %>
+                            <option value="<%= meses.indexOf(mes)+1 %>" <%= mesS %>><%= mes %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="year" class="col-sm-1 control-label">Año:</label>
+                <div class="col-sm-1">
+                    <select id="year" class="form-control" name="year">
+                        <% var ejercicios = [2021,2020,2019,2018,2017,2016]; %>
+                        <% var ejercicioS = "" %> 
+                        <% ejercicios.forEach(function(ejercicio){ %>
+                            <% ejercicioS = ejercicio == yearS ? "selected" : ""; %>
+                            <option value="<%= ejercicio %>" <%= ejercicioS %>><%= ejercicio %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="col-sm-1 alignRightThis">
+                    <button id="refresh" class="btn btn-primary btn-sm alignRightThis"><i class="fa fa-refresh" aria-hidden="true"></i></button>  
+                </div>
+            </div>
+        <br><hr><br>
+    </div>
+    <div class="row">
+        <table class="table table-striped table-hover table-condensed">
+            <tr>
+                <th>Fecha</th>
+                <th>Categoría</th>
+                <!--<th>Proyecto</th>-->
+                <th>Concepto</th>
+                <th>Débitos</th>
+                <th>Créditos</th>
+                <th>Saldo</th>
+            </tr>
+            <tr>
+                <% 
+                    var debito = 0, credito = 0, saldo = 0, debitoTotal = 0, creditoTotal = 0;
+                    saldo = suma[0] ? suma[0]["acum"]/100 : 0;
+                %>
+                <td colspan=5 class="headerThis">- SALDO ANTERIOR -</td>
+                <td class="rightThis"><strong><%= numeral(saldo).format('0,0.00'); %></strong></th>
+            </tr>
+            <% var arreglo = []; var objetos; %>
+            <% transactions.forEach(function(transaction){ %>
+                    <%
+                        var d = numeral(transaction.date % 100).format('00');
+                        var m = numeral((transaction.date % 10000 - d)/100).format('00');
+                        var y = numeral((transaction.date - m*100 - d)/10000).format('00');
+                        if(transaction.check) {
+                            if(transaction.check.finalDate){
+                                d = numeral(transaction.check.finalDate % 100).format('00');
+                                m = numeral((transaction.check.finalDate % 10000 - d)/100).format('00');
+                                y = numeral((transaction.check.finalDate - m*100 - d)/10000).format('00');    
+                            } else {
+                                d = 99;
+                                m = 99;
+                                y = 99;
+                            }
+                        }
+                        var fecha = d + "/" + m + "/" + y;
+                        var signo = transaction.sign < 0 ? "GASTO" : "INGRESO";
+                        var categoria = transaction.category ? transaction.category.name : "ERROR: NO HAY DATO";
+                        var subcategoria = transaction.subcategory ? transaction.subcategory.name : "ERROR: NO HAY DATO";
+                        //var scs = signo + ", " + categoria + ", " + subcategoria;
+                        //var cuenta = transaction.account ? transaction.account.name : "ERROR: NO HAY DATO";
+                        //var empresa = transaction.company ? transaction.company.name : "";
+                        //var proyecto = transaction.proyect ? transaction.proyect.name : "";
+                        var cheque = transaction.check ? transaction.check.number : "";
+                        cheque = cheque ? "Cheque: " + cheque : "";
+                        var facturaSerie = transaction.invoice ? transaction.invoice.serial : "";
+                        var facturaNumber = transaction.invoice ? transaction.invoice.number : "";
+                        var factura = transaction.invoice ? "Factura: " + facturaSerie + " " + facturaNumber : "";
+                        var facturaName = transaction.invoice ? transaction.invoice.contact.name : "";
+                        var monto = Number(transaction.total/100).toFixed(2); 
+                        monto = numeral(monto).format('0,0.00');
+                        var nombre = transaction.check ? transaction.check.name : "";
+                        nombre = nombre ? " a nombre de: " + nombre : "";
+                        //var concepto = transaction.check ? transaction.check.concept : "";
+                        var observacion = transaction.obs ? transaction.obs.substring(transaction.obs.indexOf("|") + 1) : "";
+                        //var ep = empresa && proyecto ? "(" empresa + proyecto + ")" : "";
+                        
+                        
+                        objetos = {
+                            key: y+ "" + m + "" + d,
+                            fechaO : fecha,
+                            signoO : signo,
+                            categoriaO : categoria,
+                            subcategoriaO : subcategoria,
+                            facturaO : factura,
+                            facturaNameO : facturaName,
+                            chequeO : cheque,
+                            nombreO : nombre,
+                            observacionO : observacion,
+                            totalO : transaction.total
+                        }
+                        arreglo.push(objetos);
+                        arreglo.sort(function compare(a, b) {
+                            const keyA = a.key;
+                            const keyB = b.key;
+
+                            let comparison = 0;
+                            if (keyA > keyB) {
+                                comparison = 1;
+                            } else if (keyA < keyB) {
+                                comparison = -1;
+                            }
+                            return comparison;
+                        });
+                    %>
+            <% }); %>
+            <% arreglo.forEach(function(a){ 
+                    debito = a.signoO == "GASTO" ?  a.totalO/-100 : 0;
+                    debitoTotal += debito;
+                    credito = a.signoO == "INGRESO" ? a.totalO/100 : 0;
+                    creditoTotal += credito;
+                    saldo = saldo + credito + debito;
+                    var mostrarD = debito == 0 ? "" : numeral(debito).format('0,0.00');
+                    var mostrarC = credito == 0 ? "" : numeral(credito).format('0,0.00');
+            %>
+                 <tr>
+                     
+                    <td><%= a.fechaO == "99/99/99" ? "PENDIENTE" : a.fechaO %></td>
+                    <td><strong><%= a.signoO %><br><%= a.categoriaO + " | " + a.subcategoriaO %></strong></td>
+                    <td>
+                        <%= a.facturaO ? a.facturaO + " " : "" %><%=  a.facturaNameO ? a.facturaNameO + " " : "" %><%= a.chequeO ? a.chequeO + " " : "" %><%= a.nombreO ? a.nombreO : "" %><br>
+                        <%= a.observacionO  %>
+                    </td>
+                    <td class="rightThis"><%= mostrarD %></td>
+                    <td class="rightThis"><%= mostrarC %></td>
+                    <td class="rightThis"><strong><%= numeral(saldo).format('0,0.00'); %></strong></td>
+                </tr>
+            <% }); %>
+            <tr>
+                <td colspan="3"><strong>TOTALES: </strong></td>
+                <td class="rightThis"><strong><%= numeral(debitoTotal).format('0,0.00'); %></strong></td>
+                <td class="rightThis"><strong><%= numeral(creditoTotal).format('0,0.00'); %></strong></td>
+                <td class="rightThis"></td>
+            </tr>
+        </table>  
+        
+        <% //include ../partials/pagination %>
+        
+    </div>
+</div>
+
+<% include ../partials/footer %>

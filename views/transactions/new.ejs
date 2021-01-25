@@ -1,0 +1,266 @@
+<% include ../partials/header %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.js"></script>
+<script>
+    function changeCategory(){
+        $("#sign option:selected").each(function () {
+            seleccion1=$(this).val();
+            $.post("/categories/list", { seleccion: seleccion1 }, function(data){
+                $("#category").html(data);
+                changeSubcategory();
+            });            
+        });
+    }
+    
+    function changeSubcategory(){
+        $("#category option:selected").each(function () {
+            seleccion2=$(this).val();
+            $.post("/subcategories/list", { seleccion: seleccion2 }, function(data){
+                $("#subcategory").html(data);
+            });            
+        });
+    }
+    
+    function changeCheck(){
+        $("#account option:selected").each(function () {
+            seleccion3=$(this).val();
+            $.post("/checks/list", { seleccion: seleccion3 }, function(data){
+                $("#check").html(data);
+            });            
+        });
+    }
+    
+    function changeProyect(){
+        $("#company option:selected").each(function () {
+            seleccion4=$(this).val();
+            $.post("/proyects/list", { seleccion: seleccion4 }, function(data){
+                $("#proyect").html(data);
+            });            
+        });
+    }
+    
+    function enableFactura(a){
+            valor = $(a).val();
+            if(!valor){
+                $(".esFactura").prop('disabled', true);
+            } else {
+                $(".esFactura").prop('disabled', false);
+            }
+    }
+    
+    function enableCheque(a){
+            valor = $(a).val();
+            if(!valor){
+                $(".esCheque").prop('disabled', true);
+            } else {
+                $(".esCheque").prop('disabled', false);
+            }
+    }
+    
+    $(window).on('load', function() {
+        changeCategory();
+        changeSubcategory();
+        changeCheck();
+        changeProyect();
+        enableFactura();
+        enableCheque();
+        $("#date").val(moment().format('YYYY-MM-DD'));
+    });
+    
+    function refreshAll(){
+        signoS=$("#sign").val();
+        catS=$("#category").val();
+        $.post("/categories/list", { seleccion: signoS }, function(data){
+            $("#category").html(data);
+            $("#category").val(catS);
+            subcatS=$("#subcategory").val();
+            $.post("/subcategories/list", { seleccion: catS }, function(data){
+                $("#subcategory").html(data);
+                $("#subcategory").val(subcatS)
+            });
+        });
+        empresaS=$("#company").val();
+        proyectS=$("#proyect").val();
+        $.post("/proyects/list", { seleccion: empresaS }, function(data){
+            $("#proyect").html(data);
+            $("#proyect").val(proyectS);
+        });
+        cuentaS=$("#account").val();
+        chequeS=$("#check").val();
+        $.post("/accounts/list", {}, function(data){
+            $("#account").html(data);
+            $("#account").val(cuentaS);
+            $.post("/checks/list", {seleccion: cuentaS}, function(data){
+                $("#check").html(data);
+                $("#check").val(chequeS);
+            }); 
+        });
+        contactoS=$("#contact").val();
+        $.post("/contacts/list/invoice", {}, function(data){
+            $("#contact").html(data);
+            $("#contact").val(contactoS);
+        }); 
+    }
+    
+    $(document).ready(function(){
+        $("#sign").change(function () {
+            changeCategory();
+        });
+        $("#category").change(function () {
+            changeSubcategory();
+        });
+        $("#account").change(function () {
+            changeCheck();
+        });
+        $("#company").change(function () {
+            changeProyect();
+        });
+        $("#contact").change(function(){
+            enableFactura($(this));
+        });
+        $("#check").change(function(){
+            enableCheque($(this));
+        });
+        $("#refresh").on('click',function(){
+            refreshAll($("#category"));
+        });
+    });
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-9"><h4 class="inlineThis">Nueva Transacción</h4></div>
+        <div class="col-sm-1 alignRightThis">
+        <button id="refresh" class="btn btn-primary btn-xs alignRightThis"><i class="fa fa-refresh" aria-hidden="true"></i></button>  
+        </div>
+        <form action="/transactions" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="sign" class="col-sm-2 control-label">Tipo:</label>
+                <div class="col-sm-4">
+                    <select id="sign" class="form-control" name="transaction[sign]">
+                        <option value="-1">Gasto</option>
+                        <option value="1">Ingreso</option>
+                    </select>
+                </div>
+                <label for="date" class="col-sm-2 control-label">Fecha:</label>
+                <div class="col-sm-4">
+                    <input class="form-control" id="date" type="date" name="transaction[date]">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="category" class="col-sm-2 control-label">Categoría:</label>
+                <div class="col-sm-4">
+                    <select id="category" class="form-control" name="transaction[category]">
+                        <% categories.forEach(function(category){ %>
+                            <option value="<%= category._id %>"><%= category.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="company" class="col-sm-2 control-label">Empresa:</label>
+                <div class="col-sm-4">
+                    <select id="company" class="form-control" name="transaction[company]">
+                        <% companies.forEach(function(company){ %>
+                            <option value="<%= company._id %>"><%= company.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="subcategory" class="col-sm-2 control-label">Subcategoría:</label>
+                <div class="col-sm-4">
+                    <select id="subcategory" class="form-control" name="transaction[subcategory]">
+                        <% subcategories.forEach(function(subcategory){ %>
+                            <option value="<%= subcategory._id %>"><%= subcategory.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="proyect" class="col-sm-2 control-label">Proyecto:</label>
+                <div class="col-sm-4">
+                    <select id="proyect" class="form-control" name="transaction[proyect]">
+                        <option value=''>SIN PROYECTO</option>
+                        <% proyects.forEach(function(proyect){ %>
+                            <option value="<%= proyect._id %>"><%= proyect.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label for="account" class="col-sm-2 control-label">Cuenta:</label>
+                <div class="col-sm-4">
+                    <select id="account" class="form-control" name="transaction[account]">
+                        <% accounts.forEach(function(account){ %>
+                            <option value="<%= account._id %>"><%= account.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="contact" class="col-sm-2 control-label">Factura de:</label>
+                <div class="col-sm-4">
+                    <select id="contact" class="form-control" name="transaction[contact]">
+                        <option value=''>SIN FACTURA</option>
+                        <% contacts.forEach(function(contact){ %>
+                            <option value="<%= contact._id %>"><%= contact.nit + " (" + contact.name + ")" %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="serial" class="col-sm-2 control-label">Serie:</label>
+                <div class="col-sm-4">
+                    <input class="form-control esFactura" id="serial" type="text" name="transaction[serial]" placeholder="serie de factura">
+                </div>
+                <label for="number" class="col-sm-2 control-label">Número:</label>
+                <div class="col-sm-4">
+                    <input class="form-control esFactura" id="number" type="text" name="transaction[number]" placeholder="número de factura">
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label for="check" class="col-sm-2 control-label">Cheque:</label>
+                <div class="col-sm-4">
+                    <select id="check" class="form-control" name="transaction[check]">
+                        <% checks.forEach(function(check){ %>
+                            <option value="<%= check._id %>"><%= check.number %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="finalDate" class="col-sm-2 control-label">Fecha de Cobro:</label>
+                <div class="col-sm-4">
+                    <input class="form-control esCheque" id="date" type="date" name="transaction[finalDate]">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">A nombre de:</label>
+                <div class="col-sm-10">
+                    <input class="form-control esCheque" id="name" type="text" name="transaction[name]" placeholder="si aplica, ingrese aquí a quién va dirigido el cheque...">
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label for="obs" class="col-sm-2 control-label">Observaciones:</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" id="obs" name="transaction[obs]" placeholder="cualquier observación aquí..."></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="total" class="col-sm-2 control-label">Monto:</label>
+                <div class="col-sm-10" lang="en-US">
+                    <input step="0.01" min="0" class="form-control" id="total" type="number" name="transaction[total]" placeholder="monto">
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10 text-right">
+                    <input type="submit" name="guardar" class="btn btn-success" value="Guardar">
+                    <input type="submit" name="otro" class="btn btn-success" value="Guardar y Añadir Otro"> 
+                    <a href="/transactions/p=1/s=." class="btn btn-warning">Cancelar</a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer %>

@@ -1,0 +1,129 @@
+<% include ../partials/header %>
+
+<script>
+    $(document).ready(function(){
+        $("#accountFrom").change(function () {
+            changeCheck();
+        });
+       $("#type").change(function () {
+           if(this.value == "check"){
+               $(".cheque").prop('disabled', false);
+               $("#fechaRetiro").text("Fecha de Cobro:");
+               $("#persona").text("A nombre de:");
+           } else {
+               $(".cheque").prop('disabled', true);
+               if(this.value == "atm"){
+                   $("#fechaRetiro").text("Fecha de Retiro:");
+                   $("#persona").text("Persona que Retiró:");
+               } else {
+                   $("#fechaRetiro").text("Fecha de Ingreso:");
+                   $("#persona").text("Persona que Devolvió:");
+               }
+           }
+       });
+    });
+    
+    function changeCheck(){
+        $("#accountFrom option:selected").each(function () {
+            seleccion3=$(this).val();
+            $.post("/checks/list", { seleccion: seleccion3 }, function(data){
+                $("#check").html(data);
+            });            
+        });
+    }
+    
+    
+    $(window).on('load', function() {
+        changeCheck();
+    });
+    
+</script>
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <h3>Nuevo Retiro</h3>  
+            <br>
+        </div>
+        <form action="/atms" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="type" class="col-sm-2 control-label">Este retiro es...</label>
+                <div class="col-sm-4">
+                    <select id="type" class="form-control" name="type">
+                        <option value="check">...mediante un cheque</option>
+                        <option value="atm">...desde un cajero</option>
+                        <option value="dev">...devuelve dinero en efectivo a cuenta</option>
+                    </select>
+                </div>
+                <label for="accountFrom" class="col-sm-2 control-label">Cuenta:</label>
+                <div class="col-sm-4">
+                    <select id="accountFrom" class="form-control" name="accountFrom">
+                        <% accounts.forEach(function(account){ %>
+                            <% if(account.type !== "Efectivo"){ %>
+                                <option value="<%= account._id %>"><%= account.name %></option>
+                            <% } %>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label for="check" class="col-sm-2 control-label">Cheque:</label>
+                <div class="col-sm-4">
+                    <select id="check" class="form-control cheque" name="check">
+                        <% checks.forEach(function(check){ %>
+                            <option value="<%= check._id %>"><%= check.number %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <label for="accountTo" id="persona" class="col-sm-2 control-label">A nombre de:</label>
+                <div class="col-sm-4">
+                    <select id="accountTo" class="form-control" name="accountTo">
+                        <% accounts.forEach(function(account){ %>
+                            <% if(account.type == "Efectivo") { %>
+                                <option value="<%= account._id %>"><%= account.contact.name %></option>
+                            <% } %>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date" class="col-sm-2 control-label">Fecha del Cheque:</label>
+                <div class="col-sm-4">
+                    <input class="form-control cheque" id="date" type="date" name="date" onchange="document.getElementById('finalDate').value=this.value;">
+                </div>
+                <label id="fechaRetiro" for="finalDate" class="col-sm-2 control-label">Fecha de Cobro:</label>
+                <div class="col-sm-4">
+                    <input class="form-control" id="finalDate" type="date" name="finalDate">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="concept" class="col-sm-2 control-label">Por concepto de:</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control cheque" id="concept" name="concept" placeholder="concepto del cheque..."></textarea>
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label for="total" class="col-sm-2 control-label">Monto:</label>
+                <div class="col-sm-10" lang="en-US">
+                    <input step="0.01" min="0" class="form-control" id="total" type="number" name="total" placeholder="monto">
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10 text-right">
+                    <input type="submit" name="guardar" class="btn btn-success" value="Guardar">
+                    <input type="submit" name="otro" class="btn btn-success" value="Guardar y Añadir Otro"> 
+                    <a href="/atms/p=1/s=." class="btn btn-warning">Cancelar</a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer %>

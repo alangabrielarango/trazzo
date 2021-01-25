@@ -1,0 +1,38 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <h3>Nueva Categoría</h3>  
+            <br>
+        </div>
+        <form action="/categories" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Nombre:</label>
+                <div class="col-sm-4">
+                    <input class="form-control" id="name" type="text" name="category[name]" placeholder="nombre">
+                </div>
+                <label for="tipo" class="col-sm-2 control-label">Tipo:</label>
+                <div class="col-sm-4">
+                    <select id="tipo" class="form-control" name="category[sign]">
+                        <option value="-1">Gasto</option>
+                        <option value="1">Ingreso</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10 text-right">
+                    <input type="submit" name="guardar" class="btn btn-success" value="Guardar">
+                    <input type="submit" name="otro" class="btn btn-success" value="Guardar y Añadir Otra"> 
+                    <a href="/categories/p=1/s=." class="btn btn-warning">Cancelar</a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer %>

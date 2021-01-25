@@ -1,0 +1,47 @@
+<% include ../partials/header %>
+
+<div class="container-fluid margen100">
+    <% include ../partials/toolbar %>
+    <div class="row">
+        <table class="table table-striped table-hover table-condensed">
+            <tr>
+                <th>Fecha</th>
+                <th>Razon Social</th>
+                <th>NIT</th>
+                <th>Serie</th>
+                <th>Número</th>
+                <th>Total</th>
+                <th>Incluir</th>
+                <th></th>
+            </tr>
+            <% invoices.forEach(function(invoice){ %>
+                <tr>
+                    <% 
+                        var d = invoice.date ? numeral(invoice.date % 100).format('00') : "";
+                        var m = invoice.date ? numeral((invoice.date % 10000 - d)/100).format('00')  : "";
+                        var y = invoice.date ? numeral((invoice.date - m*100 - d)/10000).format('00')  : "";
+                        var fecha = invoice.date ? d + "/" + m + "/" + y : "";
+                    %>
+                    <td><%= fecha %></td>
+                    <td><% var contacto = invoice.contact ? invoice.contact.fullName : "ERROR: NO HAY DATO" %><%= contacto %></td>
+                    <td><% var nit = invoice.contact ? invoice.contact.nit : "ERROR: NO HAY DATO" %><%= nit %></td>
+                    <td><%= invoice.serial %></td>
+                    <td><%= invoice.number %></td>
+                    <% var monto = Number(invoice.total/100).toFixed(2);  %>
+                    <% monto = numeral(monto).format('0,0.00'); %>
+                    <td class="rightThis"><%= monto %></td>
+                    <td class="hideThis"><% if(invoice.include){ %><i class="fa fa-check" aria-hidden="true"></i><% } %></td>
+                    <td><a href="/invoices/<%= invoice._id %>/edit" class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                    <form class="delete-form" action="/invoices/<%= invoice._id %>?_method=delete" method="POST">
+                        <button onclick="return confirm('Está seguro de eliminar: <%= contacto +  ' ' + invoice.serial + "-" + invoice.number %>?');" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </form></td>
+                </tr>
+            <% }); %>
+        </table>  
+        
+        <% include ../partials/pagination %>
+        
+    </div>
+</div>
+
+<% include ../partials/footer %>

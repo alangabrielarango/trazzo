@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <title>Trazzo S.A</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+        <link rel="stylesheet" type="text/css" href="/stylesheets/trazzo.css">
+    </head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Trazzo S.A</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <!--<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>-->
+                <!--<li><a href="#">Link</a></li>-->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Catálogos <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/contacts/p=1/s=.">Contactos</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/companies/p=1/s=.">Empresas</a></li>
+                        <li><a href="/accounts/p=1/s=.">Cuentas</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/categories/p=1/s=.">Categorías</a></li>
+                        <li><a href="/subcategories/p=1/s=.">Subcategorías</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Transacciones <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/transactions/p=1/s=.">Transacciones Diarias</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/electronics/p=1/s=.">Transferencia Electrónica</a></li>
+                        <li><a href="/atms/p=1/s=.">Retiro de Efectivo</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/checks/p=1/s=.">Cheques</a></li>
+                        <li><a href="/invoices/p=1/s=.">Facturas</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/origins/p=1/s=.">Saldos Iniciales</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Proyectos <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/proyects/p=1/s=.">Catálogo de Proyectos</a></li>
+                        <li><a href="/products/p=1/s=.">Productos</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reportes <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/reports/accounts/ALL/2021/01">Reporte por Cuentas</a></li>
+                        <li><a href="/reports/categories/ALL/2021">Reporte por Categorías</a></li>
+                        <li><a href="/reports/proyects/5a68aa4e54443200141fcf1b/2020">Reporte por Proyectos</a></li>
+                        <li><a href="/reports/invoices/2021/01">Reporte de Facturas</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <% if(!currentUser){ %>
+                    <li><a href="/login">Iniciar Sesión</a></li>
+                    <li><a href="/register">Registrarse</a></li>
+                <% } else { %>
+                    <li><a href="#"><%= currentUser.username.toUpperCase() %></a></li>
+                    <li><a href="/logout">Cerrar Sesión</a></li>
+                <% } %>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+    
+<div class="container">
+    <% if(error && error.length > 0){ %>
+        <div class="alert alert-danger" role="alert">
+            <%= error %>
+        </div> 
+    <% } %>
+    <% if(success && success.length > 0){ %>
+        <div class="alert alert-success" role="alert">
+            <%= success %>
+        </div> 
+    <% } %>
+</div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script> 
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        
+    
+        
